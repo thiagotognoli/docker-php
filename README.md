@@ -1,6 +1,6 @@
 # About this Repo
 
-This is the Git repo of the Docker [official image](https://docs.docker.com/docker-hub/official_repos/) for [php](https://registry.hub.docker.com/_/php/). See [the Docker Hub page](https://registry.hub.docker.com/_/php/) for the full readme on how to use this Docker image and for information regarding contributing and issues.
+This is the Git repo of the Docker for [php](https://registry.hub.docker.com/_/php/). See [the Docker Hub page](https://registry.hub.docker.com/_/php/) for the full readme on how to use this Docker image.
 
 The full readme is generated over in [docker-library/docs](https://github.com/docker-library/docs), specifically in [docker-library/docs/php](https://github.com/docker-library/docs/tree/master/php).
 
