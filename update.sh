@@ -37,9 +37,9 @@ declare -A debianSuites=(
 )
 defaultAlpineVersion='3.6'
 declare -A alpineVersions=(
-	[5.6]='3.4'
-	[7.0]='3.4'
-	[7.1]='3.4'
+	[5.6]='3.6'
+	[7.0]='3.6'
+	[7.1]='3.6'
 )
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
@@ -151,7 +151,7 @@ for version in "${versions[@]}"; do
 
 	for target in \
 		apache \
-		fpm fpm/alpine \
+		fpm fpm/alpine fpm-zts/alpine \
 		zts zts/alpine \
 	; do
 		[ -d "$version/$target" ] || continue
