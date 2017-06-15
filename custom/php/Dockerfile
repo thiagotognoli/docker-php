@@ -1,3 +1,5 @@
+# docker build -t php5.6-fpm-zts-alpine  /data/projects/ota-infra/docker-php/5.6/fpm-zts/alpine/. && docker build -t php5.6-ota-infra /data/projects/ota-infra/docker-php/custom/php/.
+# docker run -it --rm -p 8000:8000 --name dev1 php5.6-ota-infra
 FROM php5.6-fpm-zts-alpine
 MAINTAINER Thiago Tognoli <t@t>
 
@@ -34,17 +36,29 @@ RUN \
 		--with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j "$(getconf _NPROCESSORS_ONLN)" gd \
 	&& apk del .build-deps
-	
+
 ###### pthreads install
 RUN \
 	pecl install pthreads-2.0.10 \
 	&& docker-php-ext-enable  pthreads
-	
+
 ###### xdebug install
 RUN \
 	pecl install xdebug \
     && docker-php-ext-enable xdebug
-	
+
+###### configure php
+#set default php.ini
+RUN \
+	docker-php-source extract \
+	&& cp /usr/src/php/php.ini-production  "$PHP_INI_DIR"/php.ini \
+	&& docker-php-source delete
+
+#set default timezone
+RUN \
+	sed -i "s/^;date.timezone =$/date.timezone = \"UTC\"/" "$PHP_INI_DIR"/php.ini
+
+
 ###### clear
 RUN \
 	apk del .default-build-deps \
@@ -56,13 +70,36 @@ EXPOSE 8000
 
 COPY src/. /usr/src/myapp
 WORKDIR /usr/src/myapp
-#CMD [ "php", "./teste.php" ]
-#CMD [ "/bin/sh" ] 
+CMD [ "php", "./teste.php" ]
+CMD [ "/bin/sh" ]
 CMD [ "php", "-S", "0.0.0.0:8000" ]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #--enable-debug
-		
-#	&& sed -i "s/^;date.timezone =$/date.timezone = \"UTC\"/" /usr/local/lib/php.ini \
+
 
 #&& echo "xdebug.remote_enable=on\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 #    && echo "xdebug.remote_autostart=off\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
@@ -70,10 +107,10 @@ CMD [ "php", "-S", "0.0.0.0:8000" ]
 #    && echo "xdebug.remote_handler=dbgp\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 #    && echo "xdebug.remote_connect_back=0\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
 #    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    
-    
-    
-    
+
+
+
+
 #RUN \
 #    && docker-php-source extract \
 #	&& docker-php-source delete \
@@ -85,7 +122,7 @@ CMD [ "php", "-S", "0.0.0.0:8000" ]
 #		libjpeg-turbo-dev \
 ##install support to mcrypt
 #		libmcrypt-dev
- 
+
 
 
 #gd iconv opcache readline soap xml mysqli curl json mcrypt curl redis mbstring xdebug zip
